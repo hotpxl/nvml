@@ -3,6 +3,7 @@ package nvml
 import (
 	"fmt"
 
+	"github.com/shirou/gopsutil/process"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -72,5 +73,31 @@ type MemoryInfo struct {
 	Total uint64
 }
 
+type ProcessInfo struct {
+	PID        int32
+	UsedMemory uint64
+	Username   string
+}
+
 func (d *Device) MemoryInfo() (MemoryInfo, error) {
+	return nvmlDeviceGetMemoryInfo(d.handle)
+}
+
+func (d *Device) Processes() ([]ProcessInfo, error) {
+	processes, err := nvmlDeviceGetComputeRunningProcesses(d.handle)
+	if err != nil {
+		return nil, err
+	}
+	for idx, p := range processes {
+		pp, err := process.NewProcess(p.PID)
+		if err != nil {
+			return nil, err
+		}
+		username, err := pp.Username()
+		if err != nil {
+			return nil, err
+		}
+		processes[idx].Username = username
+	}
+	return processes, nil
 }

@@ -44,3 +44,21 @@ func nvmlDeviceGetMemoryInfo(h deviceHandle) (MemoryInfo, error) {
 	ret := C.nvmlDeviceGetMemoryInfo(h, &mem)
 	return MemoryInfo{Free: uint64(mem.free), Used: uint64(mem.used), Total: uint64(mem.total)}, handleError(ret)
 }
+
+func nvmlDeviceGetComputeRunningProcesses(h deviceHandle) ([]ProcessInfo, error) {
+	count := C.uint(64)
+	var processes [64]C.nvmlProcessInfo_t
+	ret := C.nvmlDeviceGetComputeRunningProcesses(h, &count, &processes[0])
+	err := handleError(ret)
+	if err != nil {
+		return nil, err
+	}
+	var result []ProcessInfo
+	for i := 0; i < int(count); i++ {
+		result = append(result, ProcessInfo{
+			PID:        int32(processes[i].pid),
+			UsedMemory: uint64(processes[i].usedGpuMemory),
+		})
+	}
+	return result, nil
+}

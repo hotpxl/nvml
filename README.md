@@ -15,30 +15,32 @@ please submit an issue and I'll be happy to implement.
 Following is an easy example that displays processes information on
 all devices.
 
-	package main
+```go
+package main
 
-	import (
-		"fmt"
+import (
+    "fmt"
 
-		"github.com/hotpxl/nvml"
-	)
+    "github.com/hotpxl/nvml"
+)
 
-	func main() {
-		s, err := nvml.NewSession()
-		if err != nil {
-			panic(err)
-		}
-		defer s.Close()
+func main() {
+    s, err := nvml.NewSession()
+    if err != nil {
+        panic(err)
+    }
+    defer s.Close()
 
-		devices, err := s.GetAllDevices()
-		if err != nil {
-			panic(err)
-		}
-		for _, d := range devices {
-			p, err := d.Processes()
-			if err != nil {
-				panic(err)
-			}
-			fmt.Printf("%+v\n", p)
-		}
-	}
+    devices, err := s.GetAllDevices()
+    if err != nil {
+        panic(err)
+    }
+    for _, d := range devices {
+        p, err := d.Processes()
+        if err != nil {
+            panic(err)
+        }
+        fmt.Printf("%+v\n", p)
+    }
+}
+```

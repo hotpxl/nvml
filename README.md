@@ -44,3 +44,7 @@ func main() {
     }
 }
 ```
+
+A second example
+[cmd/nvml-monitor](https://github.com/hotpxl/nvml/blob/master/cmd/nvml-monitor/main.go)
+monitors device information and uploads to etcd.

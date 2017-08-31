@@ -76,6 +76,10 @@ func main() {
 					log.WithError(err).Fatal("Failed to upload process information.")
 				}
 			}
+			_, err = cli.Put(context.Background(), path.Join(*base, hostname, "timestamp"), strconv.FormatInt(time.Now().Unix(), 10))
+			if err != nil {
+				log.WithError(err).Fatal("Failed to update timestamp.")
+			}
 		}
 		time.Sleep(*duration)
 	}

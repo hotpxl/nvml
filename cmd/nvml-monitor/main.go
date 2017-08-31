@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"os"
 	"path"
 	"strconv"
@@ -66,15 +67,13 @@ func main() {
 			if err != nil {
 				log.WithError(err).Fatal("Failed to get processes.")
 			}
-			for _, p := range processes {
-				_, err = cli.Put(context.Background(), path.Join(*base, hostname, strconv.Itoa(idx), "proc", strconv.Itoa(int(p.PID)), "used_memory"), strconv.FormatUint(p.UsedMemory, 10))
-				if err != nil {
-					log.WithError(err).Fatal("Failed to upload process information.")
-				}
-				_, err = cli.Put(context.Background(), path.Join(*base, hostname, strconv.Itoa(idx), "proc", strconv.Itoa(int(p.PID)), "username"), p.Username)
-				if err != nil {
-					log.WithError(err).Fatal("Failed to upload process information.")
-				}
+			b, err := json.Marshal(processes)
+			if err != nil {
+				log.WithError(err).Fatal("Failed to marshal data.")
+			}
+			_, err = cli.Put(context.Background(), path.Join(*base, hostname, strconv.Itoa(idx), "proc"), string(b))
+			if err != nil {
+				log.WithError(err).Fatal("Failed to upload process information.")
 			}
 			_, err = cli.Put(context.Background(), path.Join(*base, hostname, "timestamp"), strconv.FormatInt(time.Now().Unix(), 10))
 			if err != nil {

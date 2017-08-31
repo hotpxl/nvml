@@ -83,9 +83,9 @@ type MemoryInfo struct {
 
 // ProcessInfo holds process information on a device.
 type ProcessInfo struct {
-	PID        int32
-	UsedMemory uint64
-	Username   string
+	PID        int32  `json:"pid"`
+	UsedMemory uint64 `json:"usedMemory"`
+	Username   string `json:"username"`
 }
 
 // MemoryInfo returns memory consumption information from a device.

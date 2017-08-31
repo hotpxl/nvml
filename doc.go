@@ -1,7 +1,8 @@
 /*
 Package nvml is the NVIDIA Management Library (NVML) bindings for Go.
 
-Following is an easy example that displays processes information on all devices.
+Following is an easy example that displays processes information on
+all devices.
 
 	package main
 

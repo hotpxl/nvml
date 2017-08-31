@@ -6,9 +6,14 @@ There are multiple NVML Go bindings lying around GitHub. But they
 either are unmaintained or require configuring compiler flags. This
 package uses cgo and aims to be usable without any configuration.
 
+Currently very few functionalities are exported from the underlying C
+library because those are what I need. But if you want more features,
+please submit an issue and I'll be happy to implement.
+
 ## Example
 
-Following is an easy example that displays processes information on all devices.
+Following is an easy example that displays processes information on
+all devices.
 
 	package main
 

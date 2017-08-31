@@ -25,55 +25,55 @@ func main() {
 		DialTimeout: 5 * time.Second,
 	})
 	if err != nil {
-		log.WithField("err", err).Fatal("Failed to connect to etcd.")
+		log.WithError(err).Fatal("Failed to connect to etcd.")
 	}
 	defer cli.Close()
 
 	session, err := nvml.NewSession()
 	if err != nil {
-		log.WithError("err", err).Fatal("Failed to create NVML session.")
+		log.WithError(err).Fatal("Failed to create NVML session.")
 	}
 	defer session.Close()
 
 	hostname, err := os.Hostname()
 	if err != nil {
-		log.WithError("err", err).Fatal("Failed to retrieve hostname.")
+		log.WithError(err).Fatal("Failed to retrieve hostname.")
 	}
 
 	for {
 		devices, err := session.GetAllDevices()
 		if err != nil {
-			log.WithError("err", err).Fatal("Failed to get devices.")
+			log.WithError(err).Fatal("Failed to get devices.")
 		}
 		for idx, d := range devices {
 			mem, err := d.MemoryInfo()
 			if err != nil {
-				log.WithError("err", err).Fatal("Failed to get memory information.")
+				log.WithError(err).Fatal("Failed to get memory information.")
 			}
-			_, err = cli.Put(context.Background(), path.Join(base, hostname, strconv.Itoa(idx), "mem", "free"), strconv.Itoa(mem.Free))
+			_, err = cli.Put(context.Background(), path.Join(*base, hostname, strconv.Itoa(idx), "mem", "free"), strconv.Itoa(mem.Free))
 			if err != nil {
-				log.WithError("err", err).Fatal("Failed to upload memory information.")
+				log.WithError(err).Fatal("Failed to upload memory information.")
 			}
-			_, err = cli.Put(context.Background(), path.Join(base, hostname, strconv.Itoa(idx), "mem", "used"), strconv.Itoa(mem.Used))
+			_, err = cli.Put(context.Background(), path.Join(*base, hostname, strconv.Itoa(idx), "mem", "used"), strconv.Itoa(mem.Used))
 			if err != nil {
-				log.WithError("err", err).Fatal("Failed to upload memory information.")
+				log.WithError(err).Fatal("Failed to upload memory information.")
 			}
-			_, err = cli.Put(context.Background(), path.Join(base, hostname, strconv.Itoa(idx), "mem", "total"), strconv.Itoa(mem.Total))
+			_, err = cli.Put(context.Background(), path.Join(*base, hostname, strconv.Itoa(idx), "mem", "total"), strconv.Itoa(mem.Total))
 			if err != nil {
-				log.WithError("err", err).Fatal("Failed to upload memory information.")
+				log.WithError(err).Fatal("Failed to upload memory information.")
 			}
 			processes, err := d.Processes()
 			if err != nil {
-				log.WithError("err", err).Fatal("Failed to get processes.")
+				log.WithError(err).Fatal("Failed to get processes.")
 			}
 			for _, p := range processes {
-				_, err = cli.Put(context.Background(), path.Join(base, hostname, strconv.Itoa(idx), "proc", strconv.Itoa(p.PID), "used_memory"), strconv.Itoa(p.UsedMemory))
+				_, err = cli.Put(context.Background(), path.Join(*base, hostname, strconv.Itoa(idx), "proc", strconv.Itoa(p.PID), "used_memory"), strconv.Itoa(p.UsedMemory))
 				if err != nil {
-					log.WithError("err", err).Fatal("Failed to upload process information.")
+					log.WithError(err).Fatal("Failed to upload process information.")
 				}
-				_, err = cli.Put(context.Background(), path.Join(base, hostname, strconv.Itoa(idx), "proc", strconv.Itoa(p.PID), "username"), p.Username)
+				_, err = cli.Put(context.Background(), path.Join(*base, hostname, strconv.Itoa(idx), "proc", strconv.Itoa(p.PID), "username"), p.Username)
 				if err != nil {
-					log.WithError("err", err).Fatal("Failed to upload process information.")
+					log.WithError(err).Fatal("Failed to upload process information.")
 				}
 			}
 		}

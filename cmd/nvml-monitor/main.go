@@ -50,15 +50,15 @@ func main() {
 			if err != nil {
 				log.WithError(err).Fatal("Failed to get memory information.")
 			}
-			_, err = cli.Put(context.Background(), path.Join(*base, hostname, strconv.Itoa(idx), "mem", "free"), strconv.Itoa(mem.Free))
+			_, err = cli.Put(context.Background(), path.Join(*base, hostname, strconv.Itoa(idx), "mem", "free"), strconv.FormatUint(mem.Free, 10))
 			if err != nil {
 				log.WithError(err).Fatal("Failed to upload memory information.")
 			}
-			_, err = cli.Put(context.Background(), path.Join(*base, hostname, strconv.Itoa(idx), "mem", "used"), strconv.Itoa(mem.Used))
+			_, err = cli.Put(context.Background(), path.Join(*base, hostname, strconv.Itoa(idx), "mem", "used"), strconv.FormatUint(mem.Used, 10))
 			if err != nil {
 				log.WithError(err).Fatal("Failed to upload memory information.")
 			}
-			_, err = cli.Put(context.Background(), path.Join(*base, hostname, strconv.Itoa(idx), "mem", "total"), strconv.Itoa(mem.Total))
+			_, err = cli.Put(context.Background(), path.Join(*base, hostname, strconv.Itoa(idx), "mem", "total"), strconv.FormatUint(mem.Total, 10))
 			if err != nil {
 				log.WithError(err).Fatal("Failed to upload memory information.")
 			}
@@ -67,16 +67,16 @@ func main() {
 				log.WithError(err).Fatal("Failed to get processes.")
 			}
 			for _, p := range processes {
-				_, err = cli.Put(context.Background(), path.Join(*base, hostname, strconv.Itoa(idx), "proc", strconv.Itoa(p.PID), "used_memory"), strconv.Itoa(p.UsedMemory))
+				_, err = cli.Put(context.Background(), path.Join(*base, hostname, strconv.Itoa(idx), "proc", strconv.Itoa(int(p.PID)), "used_memory"), strconv.FormatUint(p.UsedMemory, 10))
 				if err != nil {
 					log.WithError(err).Fatal("Failed to upload process information.")
 				}
-				_, err = cli.Put(context.Background(), path.Join(*base, hostname, strconv.Itoa(idx), "proc", strconv.Itoa(p.PID), "username"), p.Username)
+				_, err = cli.Put(context.Background(), path.Join(*base, hostname, strconv.Itoa(idx), "proc", strconv.Itoa(int(p.PID)), "username"), p.Username)
 				if err != nil {
 					log.WithError(err).Fatal("Failed to upload process information.")
 				}
 			}
 		}
-		time.Sleep(duration)
+		time.Sleep(*duration)
 	}
 }
